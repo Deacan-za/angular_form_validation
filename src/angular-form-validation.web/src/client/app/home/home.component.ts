@@ -1,5 +1,8 @@
+
 import { Component, OnInit } from '@angular/core';
-import { NameListService } from '../shared/name-list/name-list.service';
+import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+import { FormErrors } from '../shared/models/index';
+import { ValidationService } from '../shared/services/index';
 
 /**
  * This class represents the lazy loaded HomeComponent.
@@ -11,46 +14,34 @@ import { NameListService } from '../shared/name-list/name-list.service';
   styleUrls: ['home.component.css'],
 })
 export class HomeComponent implements OnInit {
+  public UserForm: FormGroup;
+  public showtext: string;
+  public formErrors: FormErrors = new FormErrors();
 
-  newName: string = '';
-  errorMessage: string;
-  names: any[] = [];
+  constructor(private _fb: FormBuilder, private _validationService: ValidationService) {}
 
-  /**
-   * Creates an instance of the HomeComponent with the injected
-   * NameListService.
-   *
-   * @param {NameListService} nameListService - The injected NameListService.
-   */
-  constructor(public nameListService: NameListService) {}
-
-  /**
-   * Get the names OnInit
-   */
   ngOnInit() {
-    this.getNames();
+    this.buildform();
   }
 
-  /**
-   * Handle the nameListService observable
-   */
-  getNames() {
-    this.nameListService.get()
-      .subscribe(
-        names => this.names = names,
-        error => this.errorMessage = <any>error
-      );
+  ok() {
+    console.log(this.UserForm.get('UserName').value);
+    this.showtext = this.UserForm.get('UserName').value;
   }
 
-  /**
-   * Pushes a new name onto the names array
-   * @return {boolean} false to prevent default form submit behavior to refresh the page.
-   */
-  addName(): boolean {
-    // TODO: implement nameListService.post
-    this.names.push(this.newName);
-    this.newName = '';
-    return false;
+  private buildform() {
+    this.UserForm = this._fb.group({
+      UserName: ['', [Validators.required]]
+    });
+
+    this.UserForm.valueChanges
+    .subscribe(data => {
+      this._validationService.onValueChanged(this.UserForm, data);
+      this.formErrors = this._validationService.formErrors;
+    });
+
+    this._validationService.onValueChanged();
   }
+
 
 }
