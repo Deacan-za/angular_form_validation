@@ -1,13 +1,14 @@
 # README #
 
-This README would normally document whatever steps are necessary to get your application up and running.
 Yarn or npm install
 npm start
 
 ### What is this repository for? ###
 
 Quick summary
-Small implementation of angular reactive forms, using a global service and object to display messages
+Small implementation of angular reactive forms, using a global service and object to display messages.
+this allows you to pass all your form validations though a single service and object to recieve the
+appropriate error message.
 
 ### How to use ###
 Ensure that the properties of your FormErrors and ValidationMessages models are the same as the form controls you specify in your form builder.
